@@ -1,0 +1,58 @@
+spring:
+  application:
+    name: schoolregistration
+  datasource:
+    driverClassName: com.mysql.cj.jdbc.Driver
+    url: jdbc:mysql://db:3306/schoolregistration?createDatabaseIfNotExist=true
+    username: root
+    password: admin
+    maxPoolSize: 10
+    minPoolSize: 3
+    maxIdleTime: 6000
+  flyway:
+    user: root
+    password: admin
+    enabled: true
+    baselineOnMigrate: true
+    locations: classpath:db/migration
+
+  jackson:
+    default-property-inclusion: non_null
+    deserialization.fail-on-unknown-properties: false
+
+  jpa:
+    database:
+    show-sql: true
+
+  mvc:
+    pathmatch:
+      matching-strategy: ant_path_matcher
+
+logging:
+  config: classpath:logback-spring.xml
+
+springdoc:
+  swagger-ui:
+    disable-swagger-default-url: true
+    doc-expansion: none
+
+management:
+  endpoint:
+    metrics:
+      enabled: true
+  endpoints:
+    web:
+      cors:
+        allowed-origins: '*'
+        allowed-headers: '*'
+        allowed-methods: GET, OPTIONS
+        exposed-headers: 'Access-Control-Allow-Origin, Access-Control-Allow-Credentials'
+
+controller:
+  exception:
+    handler:
+      default-enabled: true
+
+server:
+  error:
+    include-message: always

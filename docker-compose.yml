@@ -1,0 +1,32 @@
+version: '3.8'
+services:
+  schoolregistration:
+    image: schoolregistration
+    container_name: schoolregistration
+    build: ./
+    depends_on:
+      db:
+        condition: service_healthy
+    ports:
+      - "8080:8080"
+    networks:
+      - net
+  db:
+    image: mysql:latest
+    restart: always
+    container_name: mysql-latest
+    ports:
+      - "3306:3306"
+    expose:
+      - '3306'
+    environment:
+      MYSQL_ROOT_USER: root
+      MYSQL_ROOT_PASSWORD: admin
+    healthcheck:
+      test: out=$$(mysqladmin ping -h localhost -P 3306 -u root --password=admin 2>&1); echo $$out | grep 'mysqld is alive' || { echo $$out; exit 1; }
+    networks:
+      - net
+volumes:
+  db-volume:
+networks:
+  net:
