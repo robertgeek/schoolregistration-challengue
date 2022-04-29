@@ -83,7 +83,7 @@ public class StudentService {
    Map<Student, List<Course>> relationshipMap = new HashMap<>();
 
       for (StudentCourse sc : studentsCourseList) {
-        if(relationshipMap.get(sc.getStudent())== null){
+        if(relationshipMap.get(sc.getStudent()) == null){
           List<Course> courses = new ArrayList<>();
           courses.add(sc.getCourse());
           relationshipMap.put(sc.getStudent(), courses);

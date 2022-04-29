@@ -6,15 +6,18 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 import com.example.schoolregistration.courses.dto.CourseDto;
+import com.example.schoolregistration.exceptions.StudentNotFoundException;
 import com.example.schoolregistration.students.dto.StudentCoursesDto;
 import com.example.schoolregistration.students.dto.StudentDto;
 import com.example.schoolregistration.students.services.StudentService;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
+import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
@@ -91,4 +94,27 @@ public class StudentControllerTest {
         .andExpect(status().isOk())
         .andExpect(jsonPath("$..coursesSubscribed", hasSize(1)));
   }
+
+  @Test
+  public void getRelathionshipExceptionTest() throws Exception {
+    Mockito.when(service.relationshipsStudentCourses()).thenThrow(StudentNotFoundException.class);
+    mockMvc.perform(MockMvcRequestBuilders
+            .get("/api/students/courses/relationship")
+            .contentType(MediaType.APPLICATION_JSON))
+        .andExpect(status().isNotFound());
+
+  }
+
+  @Test
+  public void createStudentTest() throws Exception {
+    StudentDto student = new StudentDto(1L,"John","Doe","Av. Springfield #111");
+    Mockito.when(service.create(student)).thenReturn(student);
+    mockMvc.perform(MockMvcRequestBuilders
+            .post("/api/students/create")
+            .content(new ObjectMapper().writeValueAsString(student))
+            .contentType(MediaType.APPLICATION_JSON))
+        .andExpect(status().isOk())
+        .andExpect(jsonPath("$.firstName", is("John")));
+  }
+
 }
